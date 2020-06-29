@@ -1,6 +1,6 @@
 from .db_session import db_session
 from sqlalchemy import Column, Integer
-from helpers import sql_alchemy_object_to_dict
+from helpers import sql_alchemy_object_to_dict, to_proper
 
 class BaseMixin(object):
 
@@ -47,6 +47,11 @@ class BaseMixin(object):
         ret = db_session.query(cls).filter_by(**kwargs).first()
         if ret is None:
             ret = cls(**kwargs)
+        return ret
+
+    @classmethod
+    def get_metadata_dict(cls):
+        ret = [{'value': i.name, 'text': to_proper(i.name)} for i in cls.__table__.columns if i.name not in ["id"]]
         return ret
 
 

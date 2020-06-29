@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 class Item(Base, BaseMixin):
     __tablename__ = "ITEMS"
 
+    item_name = Column(String)
     description = Column(String)
     volume = Column(Float)
 

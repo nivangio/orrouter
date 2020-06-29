@@ -1,3 +1,4 @@
 from .deduplicate_tuples_list_by_index_element import deduplicate_tuples_list_by_index_element
 from .rename_dict import rename_dict
 from .sql_alchemy_object_to_dict import sql_alchemy_object_to_dict
+from .to_proper import to_proper

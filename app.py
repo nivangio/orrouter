@@ -1,7 +1,7 @@
 from flask import Flask
-from flask_json import as_json, FlaskJSON
+from flask_json import FlaskJSON
 from flask_cors import CORS
-
+from client_views import client_views
 
 app = Flask(__name__)
 FlaskJSON(app)
@@ -9,39 +9,7 @@ FlaskJSON(app)
 # # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-
-@app.route('/clients')
-@as_json
-def get_clients():
-    return {"rows": [
-              {
-                   "client_name": 'John Smith',
-                    "address": 'Fake Street 123',
-                    "distance": 20
-              },
-              {
-                    "client_name": 'Hans Schmidt',
-                    "address": 'Fake Street 556',
-                    "distance": 60
-              },
-              {
-                    "client_name": 'Mary Jane',
-                    "address": 'Fake Street 1230',
-                    "distance": 60
-              }],
-            "headers": [
-                {
-                    "text": 'Client Name',
-                    "value": 'client_name'
-                },
-                {
-                    "text": 'Address',
-                    "value": 'address'
-                }
-
-            ]
-    }
-
+app.register_blueprint(client_views)
 
 if __name__ == '__main__':
     app.run()

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer
 from .db_session import db_session
 from helpers import sql_alchemy_object_to_dict
 
-class Static(object):
+class Searchable(object):
 
     # @declared_attr
     # def __tablename__(cls):

@@ -12,9 +12,7 @@ def get_items():
     all_items = Item.get_all()
     elems = list(map(lambda x: x.to_dict(), all_items))
 
-    return {"rows": elems,
-            "headers": Item.get_metadata_dict()
-    }
+    return {"rows": elems}
 
 
 @item_views.route('/submit_item', methods=['POST'])

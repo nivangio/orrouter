@@ -34,3 +34,11 @@ def submit_client():
 
     return {}
 
+@client_views.route('/clients_options', methods=['GET'])
+@as_json
+def get_client_options():
+
+    all_clients = Client.get_all()
+    elems = list(map(lambda x: x.to_options("company_name"), all_clients))
+
+    return {"options": elems}

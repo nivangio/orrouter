@@ -28,3 +28,12 @@ def submit_items():
         to_change.update(**config)
 
     return {}
+
+@item_views.route('/items_options', methods=['GET'])
+@as_json
+def get_item_options():
+
+    all_items = Item.get_all()
+    elems = list(map(lambda x: x.to_options("item_name"), all_items))
+
+    return {"options": elems}

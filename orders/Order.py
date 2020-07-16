@@ -30,6 +30,7 @@ class Order(Base, BaseMixin):
     arrive_before = Column(DateTime, nullable=True)
     arrive_after = Column(DateTime, nullable=True)
 
+    order_date = Column(DateTime, default=datetime.utcnow())
     last_modified = Column(DateTime, default=datetime.utcnow())
 
     ##INIT: Items must be a list of dicts {"item_id":, "amount":}
@@ -49,7 +50,12 @@ class Order(Base, BaseMixin):
         return {
             "client": self.client.company_name,
             "address": self.client.address,
-            "delivery_from": self.arrive_after,
-            "delivery_to": self.arrive_before,
+            "arrive_after": self.arrive_after,
+            "arrive_before": self.arrive_before,
+            "total_volume": self.total_volume(),
             "status": self.status.order_status_name
         }
+
+    def total_volume(self):
+        ret = sum(map(lambda x: x.item.volume * x.amount, self.items))
+        return ret

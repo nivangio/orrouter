@@ -8,7 +8,7 @@ vehicle_views = Blueprint("vehicle_views", __name__)
 
 @vehicle_views.route('/vehicles', methods=['GET'])
 @as_json
-def get_clients():
+def get_vehicle():
 
     all_vehicles = Vehicle.get_all()
     elems = list(map(lambda x: x.to_dict(), all_vehicles))
@@ -18,9 +18,9 @@ def get_clients():
 
 @vehicle_views.route('/submit_vehicle', methods=['POST'])
 @as_json
-def submit_client():
-    config = request.get_json(force=True)
+def submit_vehicle():
     try:
+        config = request.get_json(force=True)
         if config["id"] is None:
             config.pop("id")
             Vehicle.create(**config)

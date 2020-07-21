@@ -13,6 +13,17 @@ def get_clients():
     all_clients = Client.get_all()
     elems = list(map(lambda x: x.to_dict(), all_clients))
 
+    ##Add display @##
+
+    for i in range(len(elems)):
+
+        if "name" in elems[i]["address"]["properties"].keys():
+            address_display = elems[i]["address"]["properties"]["name"]
+        else:
+            address_display = elems[i]["address"]["properties"]["street"] + " " + elems[i]["address"]["properties"]["housenumber"]
+
+        elems[i]["address_display"] = ", ".join([address_display, elems[i]["address"]["properties"].get("city",'')])
+
     return {"rows": elems}
 
 

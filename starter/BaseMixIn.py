@@ -35,7 +35,7 @@ class BaseMixin(Searchable):
         return sql_alchemy_object_to_dict(self)
 
     def to_options(self, label_col):
-        return {'value': self.id, 'text': getattr(self,label_col)}
+        return {'id': self.id, 'text': getattr(self,label_col)}
 
     def delete(self):
         db_session.delete(self)

@@ -1,5 +1,5 @@
 from starter import BaseMixin, Base
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Float
+from sqlalchemy import Column, String, JSON
 from sqlalchemy.orm import relationship
 from orders import Order
 
@@ -8,8 +8,6 @@ class Client(Base, BaseMixin):
 
     company_name = Column(String)
     contact_name = Column(String)
-    address = Column(String)
-    lat = Column(Float)
-    long = Column(Float)
+    address = Column(JSON)
 
     orders = relationship(Order, backref="client")

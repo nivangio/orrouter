@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from Item import Item
 from .OrderStatus import OrderStatus
-
+from datetime import datetime
 
 class OrderItemsAssociation(Base, BaseMixin):
     __tablename__ = 'ORDERS_ITEMS'
@@ -34,16 +34,26 @@ class Order(Base, BaseMixin):
     last_modified = Column(DateTime, default=datetime.utcnow())
 
     ##INIT: Items must be a list of dicts {"item_id":, "amount":}
-    def __init__(self, items_dict):
+    def __init__(self, **kwargs):
         self.status_id = 1
 
         all_items = []
-        for i in items_dict:
-            assoc_object = OrderItemsAssociation(amount=i["amount"])
-            assoc_object.item = Item.get_by_id(i["item_id"])
+        for i in kwargs.pop("items"):
+            assoc_object = OrderItemsAssociation(amount=i["quantity"])
+            assoc_object.item = Item.get_by_id(i["id"])
             all_items.append(assoc_object)
 
         self.items = all_items
+
+        arrive_after_datetime = datetime.strptime(kwargs["delivery_date"] + " " + kwargs["arrive_after"],
+                                                  "%Y-%m-%d %H:%M")
+        arrive_before_datetime = datetime.strptime(kwargs["delivery_date"] + " " + kwargs["arrive_before"],
+                                                  "%Y-%m-%d %H:%M")
+
+        self.arrive_after = arrive_after_datetime
+        self.arrive_before = arrive_before_datetime
+
+        self.client_id = kwargs["client_id"]
 
     ##This service is used to display orders in a table
     def to_dict(self):
@@ -57,5 +67,5 @@ class Order(Base, BaseMixin):
         }
 
     def total_volume(self):
-        ret = sum(map(lambda x: x.item.volume * x.amount, self.items))
+        ret = sum(map(lambda x: int(x.item.volume) * int(x.amount), self.items))
         return ret

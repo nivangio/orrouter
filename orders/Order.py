@@ -1,21 +1,9 @@
 from starter import Base, BaseMixin, db_session
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Numeric
+from sqlalchemy import Column, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from datetime import datetime
-from Item import Item
 from .OrderStatus import OrderStatus
 from datetime import datetime
-
-class OrderItemsAssociation(Base, BaseMixin):
-    __tablename__ = 'ORDERS_ITEMS'
-
-    order_id = Column(Integer, ForeignKey('ORDERS.id'))
-
-    item_id = Column(Integer, ForeignKey('ITEMS.id'))
-    item = relationship(Item)
-
-    amount = Column(Numeric)
-
+from .helpers import get_arrival_boundaries, build_items, OrderItemsAssociation
 
 class Order(Base, BaseMixin):
     __tablename__ = 'ORDERS'
@@ -36,33 +24,29 @@ class Order(Base, BaseMixin):
     ##INIT: Items must be a list of dicts {"item_id":, "amount":}
     def __init__(self, **kwargs):
         self.status_id = 1
-
-        all_items = []
-        for i in kwargs.pop("items"):
-            assoc_object = OrderItemsAssociation(amount=i["quantity"])
-            assoc_object.item = Item.get_by_id(i["id"])
-            all_items.append(assoc_object)
-
-        self.items = all_items
-
-        arrive_after_datetime = datetime.strptime(kwargs["delivery_date"] + " " + kwargs["arrive_after"],
-                                                  "%Y-%m-%d %H:%M")
-        arrive_before_datetime = datetime.strptime(kwargs["delivery_date"] + " " + kwargs["arrive_before"],
-                                                  "%Y-%m-%d %H:%M")
-
-        self.arrive_after = arrive_after_datetime
-        self.arrive_before = arrive_before_datetime
-
+        self.items = build_items(kwargs.pop("items"))
+        self.arrive_after, self.arrive_before = get_arrival_boundaries(kwargs["delivery_date"], kwargs["arrive_after"], kwargs["arrive_before"])
         self.client_id = kwargs["client_id"]
+
+    def update(self, **kwargs):
+        self.items = build_items(kwargs.pop("items"))
+        self.arrive_after, self.arrive_before = get_arrival_boundaries(kwargs["delivery_date"], kwargs["arrive_after"], kwargs["arrive_before"])
+        self.client_id = kwargs["client_id"]
+
+        db_session.commit()
 
     ##This service is used to display orders in a table
     def to_dict(self):
         return {
-            "client": self.client.company_name,
-            "address": self.client.address,
-            "arrive_after": self.arrive_after,
-            "arrive_before": self.arrive_before,
+            "id": self.id,
+            "client": self.client.to_options("company_name"),
+            "company_name": self.client.company_name,
+            "address": self.client.display_address(),
+            "delivery_date": self.arrive_after.strftime("%Y-%m-%d"),
+            "arrive_after": self.arrive_after.strftime("%H:%M"),
+            "arrive_before": self.arrive_before.strftime("%H:%M"),
             "total_volume": self.total_volume(),
+            "order": list(map(lambda x: x.to_dict(), self.items)),
             "status": self.status.order_status_name
         }
 

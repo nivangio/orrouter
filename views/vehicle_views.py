@@ -34,3 +34,11 @@ def submit_vehicle():
 
     return {}
 
+@vehicle_views.route('/vehicles_options', methods=['GET'])
+@as_json
+def get_vehicle_options():
+
+    all_items = Vehicle.get_all()
+    elems = list(map(lambda x: x.to_options("vehicle_name"), all_items))
+
+    return {"options": elems}

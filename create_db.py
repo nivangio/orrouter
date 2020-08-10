@@ -4,6 +4,7 @@ from Client import Client
 from Item import Item
 from orders import Order
 from Vehicle import Vehicle
+from user import User
 from orders.OrderStatus import OrderStatus
 
 Base.metadata.drop_all(engine, checkfirst=True)
@@ -16,3 +17,5 @@ for i in ["Created","Scheduled for delivery", "Delivered", "Canceled"]:
 
 db_session.add_all(to_add)
 db_session.commit()
+
+User.create(username = "test", password="abcd")

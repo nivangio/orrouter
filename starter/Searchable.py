@@ -26,8 +26,8 @@ class Searchable(object):
         return ret
 
     @classmethod
-    def get_all(cls):
-        ret = db_session.query(cls).all()
+    def get_all(cls, user_id):
+        ret = db_session.query(cls).filter_by(user_id=user_id).all()
         return ret
 
     @classmethod

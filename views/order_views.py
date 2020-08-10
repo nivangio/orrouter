@@ -55,12 +55,14 @@ def submit_orders():
 @as_json
 def get_unique_orders_dates():
 
-    unique_order_dates = db_session.query(func.Date(Order.arrive_before)).filter(
+    res = db_session.query(func.Date(Order.arrive_before)).filter(
                 ##Created and/or scheduled for delivery not
                 Order.status_id.in_([1,2]),
                 func.Date(Order.arrive_before) >= date.today()
-            ).distinct()
+            ).distinct().all()
 
-    ret = list(map(lambda x: x.to_dict(), unique_order_dates))
+    unique_order_dates = list(map(lambda x: x[0], res))
 
-    return {"options": ret}
+    #ret = list(map(lambda x: x.to_dict(), unique_order_dates))
+
+    return {"options": unique_order_dates}

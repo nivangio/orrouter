@@ -2,7 +2,7 @@
 from flask import Blueprint, request
 import traceback
 from flask_json import JsonError, as_json
-from user.User import User
+from User import User
 from .token_required import token_required
 from .secret_key import SECRET_KEY
 from .AuthError import AuthError

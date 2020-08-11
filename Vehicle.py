@@ -10,4 +10,4 @@ class Vehicle(Base, BaseMixin):
     plate = Column(String)
     capacity = Column(Numeric)
 
-    routes = relationship("ROUTES", secondary="ROUTE_VEHICLE")
+    routes = relationship("Route", secondary="ROUTE_VEHICLE")

@@ -1,6 +1,6 @@
 from starter.db_session import Base, engine, db_session
 
-from user import User
+from User import User
 from orders.OrderStatus import OrderStatus
 from Client import Client
 from Item import Item

@@ -4,7 +4,7 @@ from datetime import datetime
 from pytz import timezone
 from functools import wraps
 from auth.AuthError import AuthError
-from user import User
+from User import User
 from flask_json import JsonError, as_json
 from .secret_key import SECRET_KEY
 

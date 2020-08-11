@@ -1,22 +1,26 @@
 from flask import Blueprint, request
 import traceback
 from flask_json import JsonError, as_json
+from auth import token_required
 from starter import db_session
 from orders import Order
 from sqlalchemy import func
 from datetime import date
+from Client import Client
 
 order_views = Blueprint("orders_views", __name__)
 
 
 @order_views.route('/orders', methods=['GET'])
+@token_required
 @as_json
-def get_orders():
+def get_orders(requesting_user):
 
     client_id = request.args.get("client_id",None)
 
     if client_id is None:
-        orders = Order.get_all()
+        orders = db_session.query(Order).join(Client).filter(Client.user_id == requesting_user.id).all()
+
     else:
         orders = Order.get(client_id=client_id, multiple=True)
 

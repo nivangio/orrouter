@@ -16,7 +16,7 @@ class BaseMixin(Searchable):
         obj = cls(**kw)
         db_session.add(obj)
         db_session.commit()
-        return obj.id
+        return obj
 
     @classmethod
     def get_or_create(cls, **kwargs):

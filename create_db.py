@@ -1,11 +1,12 @@
 from starter.db_session import Base, engine, db_session
 
+from user import User
+from orders.OrderStatus import OrderStatus
 from Client import Client
 from Item import Item
 from orders import Order
 from Vehicle import Vehicle
-from user import User
-from orders.OrderStatus import OrderStatus
+from routes.Route import RouteVehicle, Route
 
 Base.metadata.drop_all(engine, checkfirst=True)
 Base.metadata.create_all(engine, checkfirst=True)
